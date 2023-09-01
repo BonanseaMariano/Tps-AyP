@@ -1,32 +1,42 @@
 #include <stdio.h>
 #include <string.h>
 
-int posAlf(char input);
-
 int main(){
-    char texto[10][20]="";
-    char inp[20];
+    char cadenas[10][20];
+    char inp[50];
+    int i;    
 
+    //Validacion condicion de corte "fin"
     do
     {
-        printf("Ingrese la cadena:\n");
-        scanf("%[^\n]s",inp);
-        posAlf(inp);
-        
-    } while (strcmp(texto,"fin")!=0);
-    
-    
+        //Validacion tamaño max de la cadena
+        do
+        {
+            printf("Ingrese la cadena:\n");
+            scanf(" %[^\n]s",inp);
+        } while (strlen(inp)>20);
 
+        
+        for (i = 0; strcmp(inp,cadenas[i])>0 && i<20; i++);
+        //No llego al final del arreglo
+        if (i<20)
+        {
+            //Corro las columnas
+            for (int j = i; j < 19; j++)
+            {
+                strcpy(cadenas[i+1],cadenas[i]);
+            }
+            
+
+            //Pego en la posicion acorde
+            strcpy(cadenas[i], inp);
+        }
+        
+
+    } while (strcmp("fin",inp)!=0);
+    
+    
+    
 
     return 0;
-}
-
-int posAlf(char input){
-    //Recorro el arreglo hasta encontrar la posicion en la que colocar la nueva cadena
-    for (int i = 0; i < 10; i++)
-    {
-        /* code */
-    }
-    
-
 }

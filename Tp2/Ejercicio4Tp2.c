@@ -5,6 +5,7 @@
 
 //Variables globales
 int a[50];
+
 //Funciones
 void carga();
 void moda(int mod[]);
@@ -26,10 +27,12 @@ void carga(){
     {
         a[i] = rand() % 11;
         //Para la moda
-        mod[a[i]--]++;
+        mod[a[i]]++;
         //Para la media
         acu+=a[i];
+        printf("%d ",a[i]);
     }
+    printf("\n");
     moda(mod);
     derest(media(acu));
 }
