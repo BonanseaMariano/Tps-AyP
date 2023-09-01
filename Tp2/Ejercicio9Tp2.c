@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-bool ingreso(char *inp,char a[20][30]);
+bool ingreso(char inp[50],char a[20][30]);
 void imprimir(int cont,char a[20][30]);
 
 int main(){
@@ -11,28 +11,27 @@ int main(){
 
     do
     {
-        //Long max 30
         char inp[50]="";
+        //Valdacion de long max 30
         do
         {
             printf("Ingresa la cadena de max 30 caracteres\n");
             scanf(" %[^\n]s",inp);
         } while (strlen(inp)>30);
-        if (ingreso(&inp,&arreglo[20][30]))
+
+        if (ingreso(inp,arreglo[20][30])==true)
         {
             strcpy(arreglo[0],inp);
             cont++;
             imprimir(cont,arreglo[20][30]);
         }
     } while (cont<20);
-    
-
     return 0;
+
 }
 
-bool ingreso(char *inp,char a[20][30]){
+bool ingreso(char inp[50],char a[20][30]){
     int maylen=-1;
-    
     //For de recorrer arreglo (filas)
     for (int i = 0; i < 20; i++)
     {
@@ -48,11 +47,20 @@ bool ingreso(char *inp,char a[20][30]){
         //For de recorrer letra por letra
         for (int j = 0; j <= maylen; j++)
         {
-            if
+            if (inp[j]==a[i][j])
+            {
+                letig++;
+            }
         }
-        
+        //Calculo de porcentaje de similitud
+        //En este caso significa que no es diferente en un %20
+        if (letig/maylen>80)
+        {
+            return false;
+        }
     }
-    
+    //Este caso significa que la cadena cumple los requisitos para formar parte del arreglo
+    return true;
 }
 
 void imprimir(int cont,char a[20][30]){
