@@ -6,6 +6,13 @@ int main(){
     char inp[50];
     int i;    
 
+    //Limpieza de array de strings
+    for (int i = 0; i < 50; i++)
+    {
+        strcpy(cadenas[i],"");
+    }
+    
+
     //Validacion condicion de corte "fin"
     do
     {
@@ -26,17 +33,18 @@ int main(){
             {
                 strcpy(cadenas[i+1],cadenas[i]);
             }
-            
-
             //Pego en la posicion acorde
             strcpy(cadenas[i], inp);
+            //Impresion de todo el arreglo
+            for (int i = 0; i < 20; i++)
+            {
+                if (strcmp(cadenas[i],"")!=0)
+                {
+                    printf("%s\n",cadenas[i]);
+                }
+            }
         }
-        
-
     } while (strcmp("fin",inp)!=0);
     
-    
-    
-
     return 0;
 }
