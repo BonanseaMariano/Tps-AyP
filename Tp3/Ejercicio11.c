@@ -2,8 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-void menor(char *fechas, char *min);
-void mayor(char *fechas,char *max);
+void menor(char fechas[10][10], char *min);
+void mayor(char fechas[10][10],char *max);
 
 int main(){
     char cadenas[10][10]={"06/02/1999","07/02/1999","08/02/1999","09/02/1999","10/02/1999","11/02/1999","06/02/1999","06/02/2000","06/02/1999","06/02/1999"};
@@ -29,7 +29,7 @@ int main(){
     return 0;
 }
 
-void menor(char *fechas, char *min){
+void menor(char fechas[10][10], char *min){
     //Recorro filas
     for (int i = 1; i < 10; i++)
     {
@@ -46,7 +46,7 @@ void menor(char *fechas, char *min){
     }
 }
 
-void mayor(char *fechas,char *max){
+void mayor(char fechas[10][10],char *max){
     //Recorro filas
     for (int i = 1; i < 10; i++)
     {

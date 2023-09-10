@@ -1,0 +1,97 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
+
+#define CANT_STR 20 // Tamaño máximo del arreglo
+#define LEN_STR 30 // Longitud máxima de las cadenas
+
+void opcion(char diccionario[CANT_STR][LEN_STR], char *palabra);
+bool verificar(char diccionario[CANT_STR][LEN_STR], char *palabra);
+void impresion(char diccionario[CANT_STR][LEN_STR]);
+
+int main(){
+    
+    char diccionario[CANT_STR][LEN_STR];
+
+    char oracion[100]; // Cadena para guardar la oración ingresada por el usuario
+    
+    int i, j, encontrada; // Variables auxiliares
+
+    //Limpieza inicial
+    for (i = 0; i < CANT_STR; i++)
+    {
+        strcpy(diccionario[i],"");
+    }
+
+    // Leer la oración del usuario
+    printf("Ingrese una oracion (fin para finalizar): ");
+    scanf("%[^\n]s", oracion);
+
+    while (strcmp(oracion,"fin")!=0)
+    {
+        // Recorrer la oración palabra por palabra
+        char palabra[LEN_STR]=""; // Cadena para guardar cada palabra de la oración
+        i = 0; // Índice para recorrer la oración
+        while (oracion[i] != '\0') { // Mientras no se llegue al final de la oración
+            j = 0; // Índice para recorrer la palabra
+            while (oracion[i] != ' ' && oracion[i] != '\0') { // Mientras no se encuentre un espacio o el final de la oración
+                palabra[j] = oracion[i]; // Copiar el carácter de la oración a la palabra
+                i++; // Avanzar al siguiente carácter de la oración
+                j++; // Avanzar al siguiente carácter de la palabra
+            }
+            palabra[j] = '\0'; // Agregar el carácter nulo al final de la palabra
+
+            if (verificar(diccionario,palabra)) { // Si se encontró la palabra
+                printf("La palabra \"%s\" esta en el diccionario.\n", palabra); // Imprimir un mensaje
+            } else { // Si no se encontró la palabra
+                opcion(diccionario,palabra);
+            }
+            i++; // Avanzar al siguiente carácter de la oración (que debe ser un espacio o el final de la oración)
+        }
+
+        impresion(diccionario);
+        
+        printf("Ingrese una oracion (fin para finalizar): ");
+        scanf(" %[^\n]s", oracion);
+    }
+    
+    return 0;
+}
+
+bool verificar(char diccionario[CANT_STR][LEN_STR], char *palabra){
+    // Verificar si la palabra está en el diccionario
+    for (int j = 0; j < CANT_STR; j++) { // Recorrer el diccionario
+        if (strcmp(palabra, diccionario[j]) == 0) { // Si la palabra es igual a alguna cadena del diccionario
+            return true; // Salir del ciclo 
+        }
+    }
+    return false;
+}
+
+void opcion(char diccionario[CANT_STR][LEN_STR], char *palabra){
+    printf("La palabra \"%s\" no esta en el diccionario.\n", palabra); // Imprimir un mensaje
+    printf("Desea agregarla? (s/n): "); // Preguntar al usuario si desea agregarla            
+    char opcion; // Variable para guardar la opción del usuario
+    scanf(" %c", &opcion); // Leer la opción del usuario (el espacio antes del %c es para ignorar el salto de línea anterior)
+    
+    if (opcion == 's' || opcion == 'S') { // Si el usuario desea agregarla
+        for (int j = 0; j < CANT_STR; j++) { // Buscar una posición libre en el diccionario
+            if (diccionario[j][0] == '\0') { // Si la cadena está vacía
+                strcpy(diccionario[j], palabra); // Copiar la palabra en el diccionario
+                printf("La palabra \"%s\" ha sido agregada al diccionario.\n", palabra); // Imprimir un mensaje
+                break; // Salir del ciclo
+            }
+        }
+    }
+}
+
+void impresion(char diccionario[CANT_STR][LEN_STR]){
+    // Imprimir el estado actual del diccionario
+    printf("El diccionario actual es:\n");
+    for (int i = 0; i < CANT_STR; i++) { // Recorrer el diccionario
+        if (diccionario[i][0] != '\0') { // Si la cadena no está vacía
+            printf("%s\n", diccionario[i]); // Imprimir la cadena
+        }
+    }
+}

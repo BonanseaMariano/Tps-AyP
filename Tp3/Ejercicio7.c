@@ -11,7 +11,6 @@ int main(){
     int ary[10];
     gen(ary);
 
-
     int num,inv,cant;
     printf("Ingrese un numero: ");
     scanf("%i",&num);
@@ -36,16 +35,10 @@ void gen(int *ary){
     //Genera digitos del 1 al 9
     int dig = rand() % 10;
     
-
     for (int i = 0; i < 10; i++)
     {
         int esp=1;
-        
     }
-    
-    
-    
-
 }
 
 int inversa(int num, int cant){
