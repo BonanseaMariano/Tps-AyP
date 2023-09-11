@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-
 void descomponer(int n);
 
 int main() {
