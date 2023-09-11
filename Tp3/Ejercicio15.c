@@ -21,7 +21,8 @@ int main(){
 
 bool mod(char *frase){
     int posicion=0,contador=0;
-    char *token="",copia[LEN_STR]="", resultado[LEN_STR]="", palN[LEN_STR]="";
+    char *token,copia[LEN_STR]="", resultado[LEN_STR]="", palN[30]="";
+
     strcpy(copia,frase);
     //Este bucle se ejecuta mientras haya palabras que separar
     for (token = strtok(copia, " "); token != NULL; token = strtok(NULL, " ")){
@@ -42,15 +43,16 @@ bool mod(char *frase){
 
     contador=0;
     strcpy(copia,frase);
-    frase[strcspn(frase, "\n")] = 0;
+    
     for (token = strtok(copia, " "); token != NULL; token = strtok(NULL, " ")) {
         contador++; // aumentamos el contador en cada iteración
         if (contador == posicion) {
             printf("%s\t",token);
             strcpy(token, palN); // modificamos la palabra si coincide con la posición
         }
-            strcat(resultado, token);
-            strcat(resultado, " ");
+            strcat(resultado, token); //Concateno la siguiente palabra
+            strcat(resultado, " "); //Concateno el espacio entre palabras
+            
     }
     printf("\nFrase original:\n\t%s\n",frase);
     strcpy(frase,resultado);
