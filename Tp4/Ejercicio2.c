@@ -13,6 +13,7 @@ int main(void) {
     char *formato = "%d-%m-%Y";
 
     // Intentar formatear es para chequear que efectivamente 
+    // strftime(string a donde pego, reservo espacio en memoria, formato con el que quiero,struct de tiempo local)
     int bytesEscritos = strftime(fechaHora, sizeof(fechaHora), formato, &tiempoLocal);
 
     if (bytesEscritos != 0) {
