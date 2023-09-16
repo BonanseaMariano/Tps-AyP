@@ -5,8 +5,6 @@
 /*. Escriba un programa que llene un arreglo con 10 
 números enteros aleatorios no repetidos entre 0 y 10 y lo imprima por pantalla.*/
 
-int aleatorio_en_rango(int minimo, int maximo);
-
 int main(){
     int arreglo[10],i=0;
     int frecuencia[10]={0,0,0,0,0,0,0,0,0,0};
