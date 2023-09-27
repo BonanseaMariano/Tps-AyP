@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 
 struct Fecha {
     int dia;
