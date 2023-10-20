@@ -29,6 +29,7 @@ bool mod(char *frase){
         contador++;
     }
 
+    //Posicion a editar
     printf("Ingrese la posicion a editar (1 a %d):\n",contador);
     scanf("%d",&posicion);
     
@@ -38,6 +39,7 @@ bool mod(char *frase){
         return true;
     }
     
+    //Palabra nueva
     printf("Ingrese la nueva palabra (no se admiten espacios):\n");
     scanf("%s",palN);
 
