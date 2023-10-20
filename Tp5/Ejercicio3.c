@@ -4,7 +4,6 @@
 
 int main(){
     FILE *archivo;
-    char c;
     pid_t pid = getpid();
     archivo = fopen("pidfile","r");
     if (archivo == NULL)
