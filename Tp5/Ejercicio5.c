@@ -17,48 +17,25 @@ typedef struct{
 }Persona;
 
 void lecturaArchivo(FILE *archivo,Persona *p,FILE *archivoDestino);
-void carga(Persona *p);
-void calcEd(Persona *p);
 void imprimir(Persona *p);
+void primerSplit(Persona *p,char *cadena);
+void segundoSplit(Persona *p,char *cadena);
 
 int main(){
     Fecha f;
     Persona per;
     FILE *archivo;
     FILE *archivoDestino;
+    
+    //Para que se cargue algo
+    char test[]="Mariano;Bonansea;06/02/1999;24";
+    archivo = fopen("datosAImportar.dat", "w+");
+    fwrite(&test, sizeof(test), 1, archivo);
+    fclose(archivo);
 
+    printf("\tCarga Automatica (Hardcoded)\n");
     lecturaArchivo(archivo,&per,archivoDestino);
-    
     return 0;
-}
-
-void carga(Persona *p){
-    char feNac[10];
-    printf("Ingrese su nombre\n");
-    scanf("%s",p->nombre);
-    printf("Ingrese su apellido\n");
-    scanf("%s",p->apellido);
-    printf("Ingrese su fecha de nacimiento en formato dd/mm/aaaa:\n");
-    scanf("%d/%d/%d", p->fechaNacimiento.dia, p->fechaNacimiento.mes, p->fechaNacimiento.ano);
-}
-
-void calcEd(Persona *p){
-    time_t now;
-    time(&now);
-    double seconds;
-    struct tm birthdate = {0};
-
-    // Ajusta los valores ingresados por el usuario para que coincidan con los requeridos por la estructura tm
-    birthdate.tm_mday = p->fechaNacimiento.dia;
-    birthdate.tm_mon = p->fechaNacimiento.mes - 1;      // Mes de nacimiento (enero es 0)
-    birthdate.tm_year = p->fechaNacimiento.ano -= 1900;  // Año de nacimiento - 1900
-    
-
-    // Calcula la diferencia en segundos entre la fecha actual y la fecha de nacimiento
-    seconds = difftime(now, mktime(&birthdate));
-
-    // Calcula la edad en años redondeando hacia abajo
-    p->edad = (int)(seconds / (60 * 60 * 24 * 365.25));
 }
 
 void imprimir(Persona *p){
@@ -69,9 +46,7 @@ void imprimir(Persona *p){
 }
 
 void lecturaArchivo(FILE *archivo,Persona *p,FILE *archivoDestino){
-    char *simpleFormat;
-    char delimitador[] = ";";
-    char delimitador2[] = "/";
+    char simpleFormat[100];
     
     archivo = fopen("datosAImportar.dat", "r+");
     
@@ -81,47 +56,74 @@ void lecturaArchivo(FILE *archivo,Persona *p,FILE *archivoDestino){
         fclose(archivo);
     }else{
 
-        rewind(archivo);//Reinicio el cursor del archivo
-
         //Cuando el archivo se encuentra vacio
-        if (!fread(simpleFormat, sizeof(simpleFormat), 1, archivo))
+        if (!fread(simpleFormat, sizeof(char), 100, archivo))
         {
             printf("\n\tEl archivo se encuentra vacio!\n");
             fclose(archivo);
         }else{
             //Cuando el archivo tiene contenido
             rewind(archivo);//Reinicio el cursor del archivo (esto es por el condicional de arriba que deja el cursor en cualquier lado)
-            while (fread(simpleFormat, sizeof(simpleFormat), 1, archivo)) {
-                //Nombre
-                char *token = strtok(simpleFormat, delimitador);
-                strcpy(p->nombre, token);
-                //Apellido  
-                token = strtok(simpleFormat, delimitador);
-                strcpy(p->apellido, token);
-                //Fecha de nacimiento
-                token = strtok(simpleFormat, delimitador);
-                //Aca hay que hacer un segundo strok con otro token para que sea dia, mes, año
-                char *token2 = strtok(token2, delimitador2);
-                p->fechaNacimiento.dia = strtol(token2, NULL, 10);
-                token2 = strtok(token2, delimitador2);
-                p->fechaNacimiento.mes = strtol(token2, NULL, 10);
-                token2 = strtok(token2, delimitador2);
-                p->fechaNacimiento.ano = strtol(token2, NULL, 10);
-                //Edad
-                token = strtok(simpleFormat, delimitador);
-                p->edad = strtol(token, NULL, 10);
+            while (fread(simpleFormat, sizeof(char), 100, archivo)) {
+                printf("\n\t---- datosAImportar.dat ----\n");
+                printf("%s\n", simpleFormat); //Para testeo
+                primerSplit(p,simpleFormat);
                 //Cierro el archivo de inico
                 fclose(archivo);
                 //Parte de escritura
                 //Abro el archivco de destino y escribo
-                archivo = fopen("datosImportados.dat", "wb");
-                fwrite(&p, sizeof(Persona), 1, archivoDestino);
+                archivoDestino = fopen("datosImportados.dat", "wb+");
+                fwrite(p, sizeof(Persona), 1, archivoDestino);
                 printf("\n\t---- datosImportados.dat ----\n");
-                while (fread(&p, sizeof(Persona), 1, archivoDestino)) {
+                rewind(archivoDestino);
+                while (fread(p, sizeof(Persona), 1, archivoDestino)) {
                     imprimir(p);
                 }
                 fclose(archivoDestino);
             }
         }
     }
+}
+
+void primerSplit(Persona *p,char *cadena){
+    char **tokens = (char **)malloc(4 * sizeof(char *));
+    char *token; 
+    int i=0;
+    //Para guardar lo separado en un arreglo de strings
+    token = strtok(cadena, ";");
+    while (token != NULL)
+    {
+        tokens[i] = (char *)malloc((strlen(token) + 1) * sizeof(char));
+        strcpy(tokens[i], token);
+        token = strtok(NULL, ";");
+        i++;
+    }
+    
+    //Nombre
+    strcpy(p->nombre, tokens[0]);
+    //Apellido  
+    strcpy(p->apellido, tokens[1]);
+    //Fecha de nacimiento
+    segundoSplit(p,tokens[2]);
+    //Edad (PREGUNTAR PQ ACA LA ASIGNACION DE EDAD NO HAY QUE CONVERTIRLA COMO LA DE LA FECHA DE NACIMIENTO, solo con un casting basta)
+    p->edad = (int)tokens[3];
+    //Para liberar la memoria del arreglo de strings dinamico
+    free(tokens);
+}
+
+void segundoSplit(Persona *p,char *cadena){
+    char *token;
+    int fecha[3],i=0;
+
+    token = strtok(cadena, "/");
+    while (token != NULL)
+    {
+        fecha[i] = strtol(token, NULL, 10);
+        token = strtok(NULL, "/");
+        i++;
+    }
+
+    p->fechaNacimiento.dia = fecha[0];
+    p->fechaNacimiento.mes = fecha[1];
+    p->fechaNacimiento.ano = fecha[2];
 }
