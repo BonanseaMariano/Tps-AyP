@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct{
     int dia;
@@ -12,7 +13,13 @@ typedef struct{
     char apellido[50];
     Fecha fechaNacimiento;
     int edad;
-    //int numOrden;
+}PersonaAntigua;
+typedef struct{
+    char nombre[50];
+    char apellido[50];
+    Fecha fechaNacimiento;
+    int edad;
+    int numOrden;
 }Persona;
 
 void agregarPersona(FILE *archivo, Persona *persona, int *ordenGral);
@@ -30,18 +37,12 @@ int main() {
     Persona persona;
 
     //Abro el archivo en modo lectura/escritura (si es que ya existe cargo ordenes, sino se crea vacio y se cargan con agregarPersona)
-    archivo = fopen("datosImportados.dat", "r+");
     
-    //Errores al abrir el archivo
-    if (archivo == NULL) {
-        archivo = fopen("datosImportados.dat", "w");
-        fclose(archivo);
-        archivo = fopen("datosImportados.dat", "r+");
-    }else{
-        //agregarOrdenes(archivo,&persona,&ordenGral);
-        printf("agregarOrdenes tiene el error");
-    }
+    agregarOrdenes(archivo,&persona,&ordenGral);
 
+    //Con agregar ordenes siempre se crea el nuevo archivo
+    archivo = fopen("datosImportadosConOrden.dat", "r+");
+    
     do {
         printf("\n\t--- Menu de opciones: ----\n");
         printf("1. Agregar una nueva persona.\n");
@@ -88,14 +89,37 @@ int main() {
 }
 
 //----------------AGREGAR Ordenes-------------
-void agregarOrdenes(FILE *archivo, Persona *persona, int *ordenGral){
-    //persona->numOrden = (int)ordenGral;
-    rewind(archivo);
-        while (fread(&persona, sizeof(Persona), 1, archivo)){ {
-            //persona->numOrden = (int)++ordenGral;
-            fwrite(&persona, sizeof(Persona), 1, archivo);
+void agregarOrdenes(Persona *persona, int *ordenGral){
+    FILE *archivoViejo, *archivo;
+    PersonaAntigua personaAntigua;
+    //Abro archivo viejo
+    archivoViejo = fopen("datosImportados.dat","r");
+    //Abro archivo nuevo con numeros de orden
+    archivo = fopen("datosImportadosConOrden.dat", "w");
+    
+    //Veo si el archivo antiguo tiene algo
+    if (!fread(&personaAntigua, sizeof(PersonaAntigua), 1, archivo))
+    {
+        printf("\n\tEl archivo se encuentra vacio!\n");
+    }else{
+        //Reinicio el cursor
+        rewind(archivoViejo);
+        //Si tiene algo el archivo voy leyendo y guardando en el archivo nuevo
+        while (fread(&personaAntigua, sizeof(PersonaAntigua), 1, archivo)) {
+            strcpy(persona->nombre, personaAntigua.nombre);
+            strcpy(persona->apellido, personaAntigua.apellido);
+            persona->fechaNacimiento.ano = personaAntigua.fechaNacimiento.ano;
+            persona->fechaNacimiento.mes = personaAntigua.fechaNacimiento.mes;
+            persona->fechaNacimiento.dia = personaAntigua.fechaNacimiento.dia;
+            persona->edad = personaAntigua.edad;
+            persona->numOrden = *ordenGral++;
+            //Escribo en el nuevo archivo
+            fwrite(&persona, sizeof(persona),1,archivo);
         }
     }
+    //Cierro ambos archivos
+    fclose(archivo);
+    fclose(archivoViejo);
 }
 
 
@@ -114,7 +138,7 @@ void agregarPersona(FILE *archivo, Persona *persona, int *ordenGral) {
     printf("Ingrese la edad de la persona: ");
     scanf("%d", persona->edad);
 
-    //persona->numOrden = (int)ordenGral++;
+    persona->numOrden = (int)ordenGral++;
 
     //Escribo en el archivo el registro que llene
     fwrite(&persona, sizeof(Persona), 1, archivo);
@@ -156,15 +180,15 @@ int buscarOrden(FILE *archivo, Persona *persona) {
     printf("\n");
 
     while (fread(&persona, sizeof(Persona), 1, archivo)) {
-        //if (persona->numOrden == ord) {
-            //printf("\t------- %d* Orden ------\n",persona->numOrden);
+        if (persona->numOrden == ord) {
+            printf("\t------- %d* Orden ------\n",persona->numOrden);
             printf("Nombre: %s\n", persona->nombre);
             printf("Apellido: %s\n", persona->apellido);
             printf("Fecha de Nacimiento: %d/%d/%d\n",persona->fechaNacimiento.dia,persona->fechaNacimiento.mes,persona->fechaNacimiento.ano);
             printf("Edad: %s\n",persona->edad);
             fseek(archivo,sizeof(persona)*i,SEEK_SET); //Para posicionar el cursor una posicion antes
-            //return persona->numOrden;
-        //}
+            return persona->numOrden;
+        }
         i++;
     }
 
@@ -183,10 +207,10 @@ void eliminarOrden(FILE *archivo, Persona *persona, int *ordenGral){
         while (fread(&persona, sizeof(Persona), 1, archivo))//Leo en el original
         {
             //Para que la orden a eliminar no se copie al archivo temporal
-            //if (persona->numOrden!=ordSM)
-            //{
+            if (persona->numOrden!=ordSM)
+            {
                 fwrite(&persona, sizeof(Persona), 1, archivoMOD);//Copio en el temporal
-            //}
+            }
         }
         //Cierro y borro el archivo original
         fclose(archivo);
