@@ -42,7 +42,7 @@ void imprimir(Persona *p){
     printf("Nombre: %s\n", p->nombre);
     printf("Apellido: %s\n", p->apellido);
     printf("Fecha de Nacimiento: %d/%d/%d\n",p->fechaNacimiento.dia,p->fechaNacimiento.mes,p->fechaNacimiento.ano);
-    printf("Edad: %s\n",p->edad);
+    printf("Edad: %d\n",p->edad);
 }
 
 void lecturaArchivo(FILE *archivo,Persona *p,FILE *archivoDestino){
@@ -105,8 +105,8 @@ void primerSplit(Persona *p,char *cadena){
     strcpy(p->apellido, tokens[1]);
     //Fecha de nacimiento
     segundoSplit(p,tokens[2]);
-    //Edad (PREGUNTAR PQ ACA LA ASIGNACION DE EDAD NO HAY QUE CONVERTIRLA COMO LA DE LA FECHA DE NACIMIENTO, solo con un casting basta)
-    p->edad = (int)tokens[3];
+    //Edad
+    p->edad = atoi(tokens[3]);
     //Para liberar la memoria del arreglo de strings dinamico
     free(tokens);
 }
