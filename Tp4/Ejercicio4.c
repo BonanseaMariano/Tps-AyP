@@ -12,13 +12,18 @@ int main() {
     // Pide al usuario que ingrese su fecha de nacimiento
     printf("Por favor, ingresa tu fecha de nacimiento en formato dd/mm/aaaa: ");
     scanf("%d/%d/%d", &birthdate.tm_mday, &birthdate.tm_mon, &birthdate.tm_year);
+    printf("%d\n", birthdate.tm_mday);
+   
 
     // Ajusta los valores ingresados por el usuario para que coincidan con los requeridos por la estructura tm
     birthdate.tm_year -= 1900;  // Año de nacimiento - 1900
     birthdate.tm_mon -= 1;      // Mes de nacimiento (enero es 0)
+    printf("%d\n", birthdate.tm_mon);
+    printf("%d\n", birthdate.tm_year);
 
     // Calcula la diferencia en segundos entre la fecha actual y la fecha de nacimiento
     seconds = difftime(now, mktime(&birthdate));
+    printf("%d\n", seconds);
 
     // Calcula la edad en años redondeando hacia abajo
     int age = (int)(seconds / (60 * 60 * 24 * 365.25));
