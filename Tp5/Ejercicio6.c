@@ -138,10 +138,10 @@ void agregarPersona(FILE *archivo, Persona *persona) {
     scanf("%d/%d/%d", &persona->fechaNacimiento.dia, &persona->fechaNacimiento.mes, &persona->fechaNacimiento.ano);
 
     printf("Ingrese la edad de la persona: ");
-    scanf("%d", persona->edad);
+    scanf("%d", &persona->edad); 
 
     printf("Ingrese el numero de orden de la persona: ");
-    scanf("%d", persona->numOrden);
+    scanf("%d", &persona->numOrden);
 
     //Escribo en el archivo el registro que llene
     fwrite(persona, sizeof(Persona), 1, archivo);
@@ -169,7 +169,6 @@ void listarOrdenes(FILE *archivo, Persona *persona) {
             i++;
         }
     }
-    
 }
 
 //----------------BUSCAR Orden-------------
@@ -188,7 +187,7 @@ int buscarOrden(FILE *archivo, Persona *persona) {
             printf("Nombre: %s\n", persona->nombre);
             printf("Apellido: %s\n", persona->apellido);
             printf("Fecha de Nacimiento: %d/%d/%d\n",persona->fechaNacimiento.dia,persona->fechaNacimiento.mes,persona->fechaNacimiento.ano);
-            printf("Edad: %d\n",persona->edad);
+            printf("Edad: %d\n\n",persona->edad);
             fseek(archivo,sizeof(persona)*i,SEEK_SET); //Para posicionar el cursor una posicion antes
             return persona->numOrden;
         }
@@ -203,36 +202,35 @@ int buscarOrden(FILE *archivo, Persona *persona) {
 void eliminarOrden(FILE *archivo, Persona *persona){
     FILE *archivoMOD;
     int ordSM = buscarOrden(archivo,persona);
-    if (ordSM!=-1)
+    if (ordSM!=-1)//Esto significa que en la funcion de buscar si encontro el numero de orden
     {
         archivoMOD = fopen("temp.dat","w");
         rewind(archivo); //Reinicio el cursor del archivo original
-        while (fread(&persona, sizeof(Persona), 1, archivo))//Leo en el original
+        while (fread(persona, sizeof(Persona), 1, archivo))//Leo en el original
         {
             //Para que la orden a eliminar no se copie al archivo temporal
-            if (persona->numOrden!=ordSM)
-            {
+            if (persona->numOrden!=ordSM)//ESTO TIRA SEGMENTATION FAULT
+            {    
                 fwrite(persona, sizeof(Persona), 1, archivoMOD);//Copio en el temporal
             }
         }
 
         //Cierro y borro el archivo original
         fclose(archivo);
-        remove("datosImportados.dat");
+        remove("datosImportadosConOrden.dat");
         
         //Cierro el archivo temporal y lo renombro
         fclose(archivoMOD);
-        if(rename("temp.dat", "datosImportados.dat") == 0){
-            printf("Archivo renombrado exitosamente.");
-        }else{
-            printf("Error al renombrar el archivo.");
+        if(rename("temp.dat", "datosImportadosConOrden.dat") != 0){
+            printf("\tError al renombrar el archivo!");
         }
         //Abro denuevo el archivo original (temporal renombrado en realidad)
-        archivo = fopen("datosImportados.dat","r+");
+        archivo = fopen("datosImportadosConOrden.dat","r+");
         if (archivo == NULL)
         {
             printf("\tXX Error al abrir el archivo XX\n");
         }
+        printf("\n\t--- ORDEN ELIMINADA ---\n\n");
     } 
 }
 
