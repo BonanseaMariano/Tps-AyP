@@ -1,24 +1,22 @@
 #include <stdio.h>
 
-int piramide(int numero);
+void imprimir_piramide(int n);
 
-int main(){
-    int numero;
-    printf("Ingrese un numero:");
-    scanf("%d",&numero);
-    piramide(numero);
+int main() {
+    int n;
+    printf("Ingrese un numero natural positivo: ");
+    scanf("%d", &n);
+    imprimir_piramide(n);
     return 0;
 }
 
-int piramide(int numero){
-    if (numero==1) 
-    {
-        printf("\n\t1");
-    }else{
-        int temp = piramide(numero-1);
-        for (int i = 0; i < temp; i++)
-        {
-            printf("\n\t%d", temp);
-        }
+void imprimir_piramide(int n) {
+    if (n == 0) {
+        return;
     }
+    for (int j = 0; j < n; j++) {
+        printf("%d ", n);
+    }
+    printf("\n");  
+    imprimir_piramide(n-1);
 }
