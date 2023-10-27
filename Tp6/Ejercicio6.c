@@ -1,29 +1,35 @@
 #include <stdio.h>
 
-int minCoins(int coins[], int m, int V); //(Valores de monedas y billetes disponibles, tamaño del arreglo, suma a cubrir)
+void minCoins(int bille[], int tam, int V); //(Valores de monedas y billetes disponibles, tamaño del arreglo, suma a cubrir)
 
 int main() {
-    int coins[] = {1, 5, 10, 20, 50, 100, 500, 1000};//Arreglo de monedas/billetes
-    int m = sizeof(coins) / sizeof(coins[0]);
+    int bille[] = {2000,1000,500,200,100,50,20,10,5,2,1};//Arreglo de monedas/billetes
     int V;
     printf("Ingrese la suma a cubrir: $");
     scanf("%d", &V);
-    printf("La cantidad mínima de billetes y monedas necesarias para cubrir la suma es: %d\n", minCoins(coins, m, V));
+    printf("La cantidad minima de billetes y monedas necesarias para cubrir la suma es de:\n");
+    minCoins(bille, 0, V);
     return 0;
 }
 
-int minCoins(int coins[], int m, int V) {
-    if (V == 0) {//Caso base, el valor a cubrir llego a 0
-        return 0;
+void minCoins(int bille[], int tam, int V) {
+    if (V == 0) { //Caso base, el valor a cubrir llego a 0
+        return;
     }
-    int res = 1000000;
-    for (int i = 0; i < m; i++) {//Recorro el arreglo de monedas/billetes
-        if (coins[i] <= V) { //Voy viendo si el valor del billete o moneda actual es menor o igual que el valor a cubrir
-            int sub_res = minCoins(coins, m, V - coins[i]); //En caso verdadero aplico recursividad decrementando el valor a cubir por el valor del billete utilizado
-            if (sub_res != 1000000 && sub_res + 1 < res) { //Si el resultado de la funcion es distinto de un millosn y es menor que res actualizo el valor de res
-                res = sub_res + 1;
-            }
+    //printf("Cantidad: %d", V);
+    if (V>=bille[tam])//El billete alcanza para cubrir el valor restante
+    {
+
+        int cantBille = V / bille[tam]; // division para ver cantidad de billetes de esa denominacion que devo usar
+        //printf("Cantidad billete: %d", cantBille);
+        if (cantBille>0) //Si es que se uso al menos un billete de esa denominacion
+        {
+            printf("%d billetes de $%d\n",cantBille,bille[tam]); //Imprimo cuantos billetes y de que denominacion
+            int res = cantBille*bille[tam]; //Calculo el resto que le debo quitar al total a cubrir
+            minCoins(bille,tam+1,V-res); //Incremento tamaño para pasar al proximo billete y tambien resto al valor total
         }
+        
+    }else{ //El billete NO alcanza para cubrir el valor restante
+        minCoins(bille,tam+1,V); //Incremento tamaño para pasar al proximo billete
     }
-    return res; //Retorno el valor de res
 }
