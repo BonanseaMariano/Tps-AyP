@@ -18,12 +18,12 @@ int minCoins(int coins[], int m, int V) {
     }
     int res = 1000000;
     for (int i = 0; i < m; i++) {//Recorro el arreglo de monedas/billetes
-        if (coins[i] <= V) {
-            int sub_res = minCoins(coins, m, V - coins[i]);
-            if (sub_res != 1000000 && sub_res + 1 < res) {
+        if (coins[i] <= V) { //Voy viendo si el valor del billete o moneda actual es menor o igual que el valor a cubrir
+            int sub_res = minCoins(coins, m, V - coins[i]); //En caso verdadero aplico recursividad decrementando el valor a cubir por el valor del billete utilizado
+            if (sub_res != 1000000 && sub_res + 1 < res) { //Si el resultado de la funcion es distinto de un millosn y es menor que res actualizo el valor de res
                 res = sub_res + 1;
             }
         }
     }
-    return res;
+    return res; //Retorno el valor de res
 }
