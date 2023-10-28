@@ -28,9 +28,11 @@ int main(){
     FILE *archivoDestino;
     
     //Para que se cargue algo
-    char test[]="Mariano;Bonansea;06/02/1999;24";
+    
     archivo = fopen("datosAImportar.dat", "w+");
-    fwrite(&test, sizeof(test), 1, archivo);
+    fputs("Mariano;Bonansea;06/02/1999;24\n",archivo);
+    fputs("Lucia;Rivero;15/07/2003;20\n",archivo);
+    fputs("Lucia;Rivero;15/07/2003;20\n",archivo);
     fclose(archivo);
 
     printf("\tCarga Automatica (Hardcoded)\n");
@@ -57,14 +59,14 @@ void lecturaArchivo(FILE *archivo,Persona *p,FILE *archivoDestino){
     }else{
 
         //Cuando el archivo se encuentra vacio
-        if (!fread(simpleFormat, sizeof(char), 100, archivo))
+        if (fgets(simpleFormat,sizeof(simpleFormat),archivo)==NULL)
         {
             printf("\n\tEl archivo se encuentra vacio!\n");
             fclose(archivo);
         }else{
             //Cuando el archivo tiene contenido
             rewind(archivo);//Reinicio el cursor del archivo (esto es por el condicional de arriba que deja el cursor en cualquier lado)
-            while (fread(simpleFormat, sizeof(char), 100, archivo)) {
+            while (fgets(simpleFormat,sizeof(simpleFormat),archivo)!=NULL) { //FIJARSE POR QUE IMPRIME 1 SOLO
                 printf("\n\t---- datosAImportar.dat ----\n");
                 printf("%s\n", simpleFormat); //Para testeo
                 primerSplit(p,simpleFormat);
