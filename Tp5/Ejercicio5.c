@@ -66,12 +66,10 @@ void lecturaArchivo(FILE *archivo,Persona *p,FILE *archivoDestino){
         }else{
             //Cuando el archivo tiene contenido
             rewind(archivo);//Reinicio el cursor del archivo (esto es por el condicional de arriba que deja el cursor en cualquier lado)
-            while (fgets(simpleFormat,sizeof(simpleFormat),archivo)!=NULL) { //FIJARSE POR QUE IMPRIME 1 SOLO
+            while (fgets(simpleFormat,sizeof(simpleFormat),archivo)!=NULL) { //FIJARSE POR QUE IMPRIME 1 SOLO (ITERA SOLO UNA VEZ Y DEBERIAN SER 3)
                 printf("\n\t---- datosAImportar.dat ----\n");
                 printf("%s\n", simpleFormat); //Para testeo
                 primerSplit(p,simpleFormat);
-                //Cierro el archivo de inico
-                fclose(archivo);
                 //Parte de escritura
                 //Abro el archivco de destino y escribo
                 archivoDestino = fopen("datosImportados.dat", "wb+");
@@ -81,8 +79,10 @@ void lecturaArchivo(FILE *archivo,Persona *p,FILE *archivoDestino){
                 while (fread(p, sizeof(Persona), 1, archivoDestino)) {
                     imprimir(p);
                 }
-                fclose(archivoDestino);
             }
+            //Cierro el archivo de inico
+            fclose(archivo);
+            fclose(archivoDestino);
         }
     }
 }
